@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:learning_navigator_api/web/common/router/app_pages.dart';
 
 abstract interface class IAppRouteConfiguration implements RouteInformation {
   ///является ли эта конфигурация корневой
@@ -13,7 +14,7 @@ abstract interface class IAppRouteConfiguration implements RouteInformation {
 
   ///Добавить страницу, роут к приложению и выпустить новую
   ///кофигурацию на основе текущей
-  IAppRouteConfiguration add(Object? appPage); //TODO: Oject заменить на AppPAge
+  IAppRouteConfiguration add(AppPage appPage); //TODO: Oject заменить на AppPAge
 }
 
 ///Базовая конфигурация, шаблонный метод
@@ -40,21 +41,30 @@ abstract class RouterConfigurationBase implements IAppRouteConfiguration {
           newState.remove(pathSegments.last); //TODO: продебажить посмотреть как изменяется
         }
 
-        //TODO: Вернуть конфигурацию на основе нового пути
-        return null;
-      } on Object catch (error, stackTrace) {
+        return DynamicRouteConfiguration(
+          Uri.parse(newPath),
+          newState,
+        );
+      } on Object catch (_) {
         return null;
       }
     }
 
-    return null;
+    return getPrevious();
   }
 
   @override
-  IAppRouteConfiguration add(Object? appPage) {
-    //TODO: Реализовать логику, на вход должна поступать пейджа
-    //TODO: на основе которой будет реализована конфигурация
-    return this;
+  IAppRouteConfiguration add(AppPage appPage) {
+    if (appPage.name.isEmpty) return this;
+    final newPath = appPage.name; //TODO: нужно будет релизовать нормализацию!
+    final arguments = appPage.arguments;
+    if (arguments is Map<String, Object> || state != null) {
+      return DynamicRouteConfiguration(Uri.parse(newPath), {
+        ...?state,
+        if (arguments is Object) appPage.name: arguments,
+      });
+    }
+    return DynamicRouteConfiguration(Uri.parse(newPath));
   }
 
   @override
@@ -72,6 +82,7 @@ abstract class RouterConfigurationBase implements IAppRouteConfiguration {
   }
 }
 
+///Конфигурация домашней страницы
 final class HomeRouteConfiguration extends RouterConfigurationBase {
   @override
   bool get isRoot => true;
@@ -89,6 +100,7 @@ final class HomeRouteConfiguration extends RouterConfigurationBase {
   Uri get uri => Uri.parse(location);
 }
 
+///Конфигурация не надейной страницы
 final class NotFoundRouteConfiguration extends RouterConfigurationBase {
   @override
   String location = 'home/404';
@@ -104,4 +116,18 @@ final class NotFoundRouteConfiguration extends RouterConfigurationBase {
 
   @override
   Uri get uri => Uri.parse(location);
+}
+
+///Конфигурация которая создается на основе входных значений
+final class DynamicRouteConfiguration extends RouterConfigurationBase {
+  DynamicRouteConfiguration(this.uri, [this.state]);
+
+  @override
+  final Uri uri;
+
+  @override
+  final Map<String, Object?>? state;
+
+  @override
+  String get location => uri.path;
 }
