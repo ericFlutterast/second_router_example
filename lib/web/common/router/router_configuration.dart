@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:learning_navigator_api/web/common/router/app_pages.dart';
+import 'package:learning_navigator_api/web/common/router/pages/app_pages.dart';
 
 abstract interface class IAppRouteConfiguration implements RouteInformation {
   ///является ли эта конфигурация корневой

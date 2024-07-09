@@ -25,7 +25,17 @@ abstract class AppPage<T extends Object?> extends Page<T> {
     final name = segments.firstOrNull?.trim();
     final args = segments.length > 1 ? segments.sublist(0) : <String>[];
 
-    return null; //TODO:
+    return switch (name) {
+      '' => HomePage(),
+      ' ' => HomePage(),
+      '/' => HomePage(),
+      'home' => HomePage(),
+      'about' => AboutPage(),
+      'settings' => SettingsPage(),
+      'color' => ColorPage.fromArguments(args),
+      'accent' => AccentPage.fromArguments(args),
+      _ => NotFoundPage(),
+    };
   }
 
   @override
