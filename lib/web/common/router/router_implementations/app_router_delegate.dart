@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:learning_navigator_api/web/common/router/observers/observers.dart';
 
 final class AppRouterDelegate<IAppRouteConfiguration> extends RouterDelegate<IAppRouteConfiguration>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin {
+    with ChangeNotifier {
   AppRouterDelegate()
       : _modalObserver = ModalObserver(),
         _pageObserver = PageObserver();
@@ -11,6 +11,9 @@ final class AppRouterDelegate<IAppRouteConfiguration> extends RouterDelegate<IAp
   final ModalObserver _modalObserver;
   final PageObserver _pageObserver;
   IAppRouteConfiguration? _currentConfiguration;
+
+  ModalObserver get modalObserver => _modalObserver;
+  PageObserver get pageObserver => _pageObserver;
 
   @override
   IAppRouteConfiguration? get currentConfiguration {
@@ -20,7 +23,6 @@ final class AppRouterDelegate<IAppRouteConfiguration> extends RouterDelegate<IAp
     return _currentConfiguration!;
   }
 
-  @override
   GlobalKey<NavigatorState>? get navigatorKey => GlobalKey<NavigatorState>();
 
   @override
@@ -53,5 +55,11 @@ final class AppRouterDelegate<IAppRouteConfiguration> extends RouterDelegate<IAp
   Future<void> setRestoredRoutePath(IAppRouteConfiguration configuration) {
     print('setRestoredRoutePath');
     return super.setRestoredRoutePath(configuration);
+  }
+
+  @override
+  Future<bool> popRoute() {
+    final NavigatorState? navigator = navigatorKey?.currentState;
+    return navigator?.maybePop() ?? SynchronousFuture<bool>(false);
   }
 }
