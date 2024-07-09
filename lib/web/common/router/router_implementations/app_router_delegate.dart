@@ -1,51 +1,57 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:learning_navigator_api/web/common/router/observers/observers.dart';
 
-final class AppRouterDelegate<AppRouterState> extends RouterDelegate<AppRouterState>
+final class AppRouterDelegate<IAppRouteConfiguration> extends RouterDelegate<IAppRouteConfiguration>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
+  AppRouterDelegate()
+      : _modalObserver = ModalObserver(),
+        _pageObserver = PageObserver();
+
+  final ModalObserver _modalObserver;
+  final PageObserver _pageObserver;
+  IAppRouteConfiguration? _currentConfiguration;
+
+  @override
+  IAppRouteConfiguration? get currentConfiguration {
+    if (_currentConfiguration == null) {
+      UnsupportedError('Не установленна превоначалная конфигурация');
+    }
+    return _currentConfiguration!;
+  }
+
   @override
   GlobalKey<NavigatorState>? get navigatorKey => GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
-    return Navigator(
-      key: navigatorKey,
-      onGenerateRoute: (setting) {
-        return switch (setting.name) {
-          '/home' => _createRoute(
-              Container(color: Colors.orange, child: const Center(child: Text('home'))),
-            ),
-          '/chat' => _createRoute(
-              Container(color: Colors.blue, child: const Center(child: Text('chat'))),
-            ),
-          '/friends' => _createRoute(
-              Container(color: Colors.pink, child: const Center(child: Text('friends'))),
-            ),
-          '/profile' => _createRoute(
-              Container(color: Colors.greenAccent, child: const Center(child: Text('profile'))),
-            ),
-          _ => _createRoute(
-              Container(color: Colors.red, child: const Center(child: Text('404'))),
-            ),
-        };
-      },
-      onPopPage: (route, result) {
-        //TODO:
-        return false;
-      },
-    );
+    return const Placeholder();
   }
 
+  //Получаем новую конфигурацию из парсера
   @override
-  Future<void> setNewRoutePath(AppRouterState configuration) async {
-    print('setNewRoutePath');
+  Future<void> setNewRoutePath(IAppRouteConfiguration configuration) async {
+    if (configuration == _currentConfiguration) {
+      //Конфигурация не изменилась
+      return SynchronousFuture<void>(null);
+    }
+
+    _currentConfiguration = configuration;
     notifyListeners();
+    return SynchronousFuture<void>(null);
   }
 
-  Route _createRoute(Widget child) {
-    return PageRouteBuilder(
-      pageBuilder: (context, _, __) {
-        return child;
-      },
-    );
+  //вызывается когда платформа уведомяляет об анализе начальеого маршрута
+  @override
+  Future<void> setInitialRoutePath(IAppRouteConfiguration configuration) {
+    print('setInitialRoutePath');
+    return super.setInitialRoutePath(configuration);
+  }
+
+  //вызывается когда происходит воставновление состояния
+  @override
+  Future<void> setRestoredRoutePath(IAppRouteConfiguration configuration) {
+    print('setRestoredRoutePath');
+    return super.setRestoredRoutePath(configuration);
   }
 }
