@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:learning_navigator_api/web/common/router/app_router.dart';
 import 'package:learning_navigator_api/web/common/router/observers/observers.dart';
+import 'package:learning_navigator_api/web/features/home/screens/home.dart';
 
 final class AppRouterDelegate<IAppRouteConfiguration> extends RouterDelegate<IAppRouteConfiguration>
     with ChangeNotifier {
@@ -15,6 +17,8 @@ final class AppRouterDelegate<IAppRouteConfiguration> extends RouterDelegate<IAp
   ModalObserver get modalObserver => _modalObserver;
   PageObserver get pageObserver => _pageObserver;
 
+  GlobalKey<NavigatorState>? get navigatorKey => GlobalKey<NavigatorState>();
+
   @override
   IAppRouteConfiguration? get currentConfiguration {
     if (_currentConfiguration == null) {
@@ -23,11 +27,12 @@ final class AppRouterDelegate<IAppRouteConfiguration> extends RouterDelegate<IAp
     return _currentConfiguration!;
   }
 
-  GlobalKey<NavigatorState>? get navigatorKey => GlobalKey<NavigatorState>();
-
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return AppRouter(
+      delegate: this,
+      child: const HomeScreen(),
+    );
   }
 
   //Получаем новую конфигурацию из парсера
