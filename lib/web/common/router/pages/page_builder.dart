@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:learning_navigator_api/web/common/router/pages/app_pages.dart';
-import 'package:learning_navigator_api/web/common/router/router_configuration.dart';
+
+import '../router_configuration.dart';
 
 class PageBuilder extends StatefulWidget {
   const PageBuilder({

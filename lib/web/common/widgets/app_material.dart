@@ -13,7 +13,7 @@ class AppMaterial extends StatefulWidget {
 
 class _AppMaterialState extends State<AppMaterial> {
   final RouteInformationParser<IAppRouteConfiguration> _appRouterParser = const AppRouterParser();
-  final AppRouterDelegate<AppRouterParser> _routerDelegate = AppRouterDelegate<AppRouterParser>();
+  final RouterDelegate<IAppRouteConfiguration> _routerDelegate = AppRouterDelegate();
 
   @override
   Widget build(BuildContext context) {
