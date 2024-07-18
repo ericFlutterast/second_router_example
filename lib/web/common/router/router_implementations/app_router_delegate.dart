@@ -21,10 +21,11 @@ final class AppRouterDelegate<IAppRouteConfiguration> extends RouterDelegate<IAp
 
   @override
   IAppRouteConfiguration? get currentConfiguration {
-    if (_currentConfiguration == null) {
-      UnsupportedError('Не установленна превоначалная конфигурация');
+    final configuration = _currentConfiguration;
+    if (configuration == null) {
+      throw UnsupportedError('Не установленна превоначальная конфигурация');
     }
-    return _currentConfiguration!;
+    return configuration;
   }
 
   @override
@@ -36,17 +37,17 @@ final class AppRouterDelegate<IAppRouteConfiguration> extends RouterDelegate<IAp
   }
 
   //Получаем новую конфигурацию из парсера
-  @override
-  Future<void> setNewRoutePath(IAppRouteConfiguration configuration) async {
-    if (configuration == _currentConfiguration) {
-      //Конфигурация не изменилась
-      return SynchronousFuture<void>(null);
-    }
-
-    _currentConfiguration = configuration;
-    notifyListeners();
-    return SynchronousFuture<void>(null);
-  }
+  // @override
+  // Future<void> setNewRoutePath(IAppRouteConfiguration configuration) async {
+  //   if (configuration == _currentConfiguration) {
+  //     //Конфигурация не изменилась
+  //     return SynchronousFuture<void>(null);
+  //   }
+  //
+  //   _currentConfiguration = configuration;
+  //   notifyListeners();
+  //   return SynchronousFuture<void>(null);
+  // }
 
   //вызывается когда платформа уведомяляет об анализе начальеого маршрута
   @override
@@ -66,5 +67,17 @@ final class AppRouterDelegate<IAppRouteConfiguration> extends RouterDelegate<IAp
   Future<bool> popRoute() {
     final NavigatorState? navigator = navigatorKey?.currentState;
     return navigator?.maybePop() ?? SynchronousFuture<bool>(false);
+  }
+
+  @override
+  Future<void> setNewRoutePath(IAppRouteConfiguration configuration) {
+    if (configuration == _currentConfiguration) {
+      //Конфигурация не изменилась
+      return SynchronousFuture<void>(null);
+    }
+
+    _currentConfiguration = configuration;
+    notifyListeners();
+    return SynchronousFuture<void>(null);
   }
 }

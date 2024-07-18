@@ -22,9 +22,9 @@ mixin _ParseRouteInformationMixin on RouteInformationParser<IAppRouteConfigurati
         state = null;
       }
 
-      final newConfiguration =
-          DynamicRouteConfiguration(routeInformation.uri, state as Map<String, Object?>?);
-      return SynchronousFuture<IAppRouteConfiguration>(newConfiguration);
+      // final newConfiguration =
+      //     DynamicRouteConfiguration(routeInformation.uri, state as Map<String, Object?>?);
+      return SynchronousFuture<IAppRouteConfiguration>(HomeRouteConfiguration());
     } catch (error) {
       print('Произошла ошибка навигации: $error');
       return SynchronousFuture<IAppRouteConfiguration>(NotFoundRouteConfiguration());

@@ -18,7 +18,7 @@ abstract class AppPage<T extends Object?> extends Page<T> {
   final bool fullscreenDialog;
 
   ///Создать пейджу на сегмента пути
-  static AppPage? fromPath(String path, {Object? arguments}) {
+  static AppPage fromPath(String path, {Object? arguments}) {
     //Предполагаем что каждый сегмент состоит из имени
     //и разделен '-' после которого могут идти допольнительные параметры, индекс и так далее
     final segments = path.toLowerCase().split('-');
